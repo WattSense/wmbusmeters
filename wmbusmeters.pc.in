@@ -1,0 +1,12 @@
+prefix=@DEST_DIR@
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include/wmbusmeters
+
+Name: wmbusmeters
+Description: wsmbusmeters core library
+Version: 0.9.29
+
+Libs: -L${libdir} -lwmbusmeters
+Cflags: -I${includedir}
+

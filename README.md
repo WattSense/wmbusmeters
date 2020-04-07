@@ -353,6 +353,15 @@ Binary generated: `./build_arm_debug/wmbusmeters`
 (Work in progress...)
 Binary generated: `./wmbusmeters_0.8_armhf.deb`
 
+# Build with CMake
+
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
 # System configuration
 
 `make install` installs the files:
