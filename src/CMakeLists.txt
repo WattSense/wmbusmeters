@@ -25,12 +25,9 @@ set(METERS_SRC
     meter_supercom587.cc
     meter_vario451.cc
 )
-# library containing all meters
-add_library(meters_lib SHARED ${METERS_SRC})
-set_target_properties(meters_lib PROPERTIES OUTPUT_NAME wmbusmeters-meters)
 
 # groups core lib sources
-set(WMBUSMETERS_LIB_SRC
+set(CORE_SRC
 	aes.cc
 	aescmac.cc
 	cmdline.cc
@@ -53,7 +50,7 @@ set(WMBUSMETERS_LIB_SRC
 	wmbus_wmb13u.cc
     wmbus_utils.cc
 )
-set(WMBUSMETERS_PUB_HEADERS
+set(PUB_HEADERS
     dvparser.h
     manufacturers.h
     meters.h
@@ -64,10 +61,10 @@ set(WMBUSMETERS_PUB_HEADERS
     wmbus_utils.h
     wmbus.h)
 # core library
-add_library(core_lib SHARED ${WMBUSMETERS_LIB_SRC})
+add_library(core_lib SHARED ${CORE_SRC} ${METERS_SRC})
 set_target_properties(core_lib PROPERTIES
                       OUTPUT_NAME wmbusmeters)
-set_target_properties(core_lib PROPERTIES PUBLIC_HEADER "${WMBUSMETERS_PUB_HEADERS}")
+set_target_properties(core_lib PROPERTIES PUBLIC_HEADER "${PUB_HEADERS}")
 target_link_libraries(core_lib PRIVATE pthread)
 
 # generated files
@@ -81,13 +78,13 @@ add_custom_command(OUTPUT short_manual.h
 # main binary
 add_executable(wmbusmeters main.cc version.h short_manual.h)
 target_include_directories(wmbusmeters PRIVATE ${CMAKE_BINARY_DIR}/src)
-target_link_libraries(wmbusmeters core_lib meters_lib ${DEBUG_LIBS})
+target_link_libraries(wmbusmeters core_lib ${DEBUG_LIBS})
 
 # test binary
 add_executable(testinternals testinternals.cc)
 target_link_libraries(testinternals core_lib)
 
-install(TARGETS wmbusmeters core_lib meters_lib
+install(TARGETS wmbusmeters core_lib
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/wmbusmeters)
