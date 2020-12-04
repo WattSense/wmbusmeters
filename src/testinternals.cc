@@ -239,7 +239,9 @@ int test_linkmodes()
 
     shared_ptr<WMBus> wmbus_im871a = openIM871A("", manager, serial1);
     shared_ptr<WMBus> wmbus_amb8465 = openAMB8465("", manager, serial2);
+#ifdef RTLSDR
     shared_ptr<WMBus> wmbus_rtlwmbus = openRTLWMBUS("", "", manager, [](){}, serial3);
+#endif
     shared_ptr<WMBus> wmbus_rawtty = openRawTTY("", 0, manager, serial4);
 
     Configuration nometers_config;
@@ -288,12 +290,14 @@ int test_linkmodes()
     }
     debug("test2 OK\n\n");
 
+#ifdef RTLSDR
     lmcr = calculateLinkModes(&apator_config, wmbus_rtlwmbus.get());
     if (lmcr.type != LinkModeCalculationResultType::Success)
     {
         printf("ERROR! Expected success! Got instead:\n%s\n", lmcr.msg.c_str());
     }
     debug("test3 OK\n\n");
+#endif
 
     Configuration multical21_and_supercom587_config;
     string multical21 = "multical21";

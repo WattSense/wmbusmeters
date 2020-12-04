@@ -21,6 +21,7 @@
 # make DEBUG=true HOST=arm
 
 DESTDIR?=/
+RTLSDR?=true
 
 ifeq "$(HOST)" "arm"
     CXX?=arm-linux-gnueabihf-g++
@@ -150,7 +151,6 @@ METER_OBJS:=\
 	$(BUILD)/meter_waterstarm.o \
 	$(BUILD)/meter_sensostar.o \
 	$(BUILD)/printer.o \
-	$(BUILD)/rtlsdr.o \
 	$(BUILD)/serial.o \
 	$(BUILD)/shell.o \
 	$(BUILD)/sha256.o \
@@ -167,6 +167,14 @@ METER_OBJS:=\
 	$(BUILD)/wmbus_rawtty.o \
 	$(BUILD)/wmbus_rc1180.o \
 	$(BUILD)/wmbus_utils.o
+
+ifeq "$(RTLSDR)" "true"
+	METER_OBJS=\
+		$(METERS_OBJ) \
+		$(BUILD)/rtlsdr.o
+	LDFLAGS += -lrtlsdr
+	CXXFLAGS += -DRTLSDR
+endif
 
 all: $(BUILD)/wmbusmeters $(BUILD)/wmbusmeters-admin $(BUILD)/testinternals
 	@$(STRIP_BINARY)
@@ -201,10 +209,10 @@ snapcraft:
 $(BUILD)/main.o: $(BUILD)/short_manual.h $(BUILD)/version.h
 
 $(BUILD)/wmbusmeters: $(METER_OBJS) $(BUILD)/main.o $(BUILD)/short_manual.h
-	$(CXX) -o $(BUILD)/wmbusmeters $(METER_OBJS) $(BUILD)/main.o $(LDFLAGS) -lrtlsdr -lusb-1.0 -lpthread
+	$(CXX) -o $(BUILD)/wmbusmeters $(METER_OBJS) $(BUILD)/main.o $(LDFLAGS) -lusb-1.0 -lpthread
 
 $(BUILD)/wmbusmeters-admin: $(METER_OBJS) $(BUILD)/admin.o $(BUILD)/ui.o $(BUILD)/short_manual.h
-	$(CXX) -o $(BUILD)/wmbusmeters-admin $(METER_OBJS) $(BUILD)/admin.o $(BUILD)/ui.o $(LDFLAGS) -lmenu -lform -lncurses -lrtlsdr -lusb-1.0 -lpthread
+	$(CXX) -o $(BUILD)/wmbusmeters-admin $(METER_OBJS) $(BUILD)/admin.o $(BUILD)/ui.o $(LDFLAGS) -lmenu -lform -lncurses -lusb-1.0 -lpthread
 
 $(BUILD)/short_manual.h: README.md
 	echo 'R"MANUAL(' > $(BUILD)/short_manual.h
@@ -214,10 +222,10 @@ $(BUILD)/short_manual.h: README.md
 	echo ')MANUAL";' >> $(BUILD)/short_manual.h
 
 $(BUILD)/testinternals: $(METER_OBJS) $(BUILD)/testinternals.o
-	$(CXX) -o $(BUILD)/testinternals $(METER_OBJS) $(BUILD)/testinternals.o $(LDFLAGS) -lrtlsdr -lusb-1.0 -lpthread
+	$(CXX) -o $(BUILD)/testinternals $(METER_OBJS) $(BUILD)/testinternals.o $(LDFLAGS) -lusb-1.0 -lpthread
 
 $(BUILD)/fuzz: $(METER_OBJS) $(BUILD)/fuzz.o
-	$(CXX) -o $(BUILD)/fuzz $(METER_OBJS) $(BUILD)/fuzz.o $(LDFLAGS) -lrtlsdr -lpthread
+	$(CXX) -o $(BUILD)/fuzz $(METER_OBJS) $(BUILD)/fuzz.o $(LDFLAGS) -lpthread
 
 clean:
 	rm -rf build/* build_arm/* build_debug/* build_arm_debug/* *~

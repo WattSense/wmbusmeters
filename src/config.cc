@@ -253,7 +253,10 @@ bool handleDevice(Configuration *c, string devicefile)
                 specified_device.linkmodes.addLinkMode(LinkMode::Any);
             }
             else
-            if (specified_device.type == WMBusDeviceType::DEVICE_RTLWMBUS ||
+            if (
+#ifdef RTLSDR
+                specified_device.type == WMBusDeviceType::DEVICE_RTLWMBUS ||
+#endif
                 specified_device.type == WMBusDeviceType::DEVICE_RTL433)
             {
                 c->all_device_linkmodes_specified.addLinkMode(LinkMode::C1);

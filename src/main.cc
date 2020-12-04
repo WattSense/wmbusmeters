@@ -61,7 +61,9 @@ void log_start_information(Configuration *config);
 void oneshot_check(Configuration *config, Telegram *t, Meter *meter);
 void open_wmbus_device_and_set_linkmodes(Configuration *config, string how, Detected *detected);
 void perform_auto_scan_of_serial_devices(Configuration *config);
+#ifdef RTLSDR
 void perform_auto_scan_of_swradio_devices(Configuration *config);
+#endif
 void regular_checkup(Configuration *config);
 void remove_lost_serial_devices_from_ignore_list(vector<string> &devices);
 void remove_lost_swradio_devices_from_ignore_list(vector<string> &devices);
@@ -363,6 +365,7 @@ shared_ptr<WMBus> create_wmbus_object(Detected *detected, Configuration *config,
         break;
     case DEVICE_RTLWMBUS:
     {
+#ifdef RTLSDR
         string command;
         string identifier = detected->found_device_id;
         int id = 0;
@@ -410,6 +413,7 @@ shared_ptr<WMBus> create_wmbus_object(Detected *detected, Configuration *config,
                                          "Command was: \"%s\"\n", command.c_str());
                              },
                              serial_override);
+#endif
         break;
     }
     case DEVICE_RTL433:
@@ -481,7 +485,11 @@ shared_ptr<WMBus> create_wmbus_object(Detected *detected, Configuration *config,
     if (detected->found_device_id != "" &&  !detected->found_tty_override)
     {
         string did = wmbus->getDeviceId();
-        if (did != detected->found_device_id && detected->found_type != DEVICE_RTLWMBUS)
+        if (did != detected->found_device_id
+#ifdef RTLSDR
+            && detected->found_type != DEVICE_RTLWMBUS
+#endif
+        )
         {
             warning("Not the expected dongle (dongle said %s, you said %s!\n", did.c_str(), detected->found_device_id.c_str());
             return NULL;
@@ -622,10 +630,12 @@ void detect_and_configure_wmbus_devices(Configuration *config, DetectionType dt)
         perform_auto_scan_of_serial_devices(config);
     }
 
+#ifdef RTLSDR
     if (must_auto_find_rtlsdrs)
     {
         perform_auto_scan_of_swradio_devices(config);
     }
+#endif
 
     for (shared_ptr<WMBus> &wmbus : wmbus_devices_)
     {
@@ -968,6 +978,7 @@ void perform_auto_scan_of_serial_devices(Configuration *config)
     }
 }
 
+#ifdef RTLSDR
 void perform_auto_scan_of_swradio_devices(Configuration *config)
 {
     // Enumerate all swradio devices, that can be used.
@@ -1011,6 +1022,7 @@ void perform_auto_scan_of_swradio_devices(Configuration *config)
         }
     }
 }
+#endif
 
 time_t last_info_print_ = 0;
 
