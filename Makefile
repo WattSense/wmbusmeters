@@ -25,13 +25,13 @@ DESTDIR?=/
 ifeq "$(HOST)" "arm"
     CXX?=arm-linux-gnueabihf-g++
     STRIP?=arm-linux-gnueabihf-strip
-    BUILD=build_arm
+    BUILD?=build_arm
     DEBARCH=armhf
 else
     CXX?=g++
     STRIP?=strip
 #--strip-unneeded --remove-section=.comment --remove-section=.note
-    BUILD=build
+    BUILD?=build
     DEBARCH=amd64
 endif
 
