@@ -40,6 +40,7 @@
     X(flowiq3100, C1_bit, Water,       FLOWIQ3100,  FlowIQ3100)   \
     X(em24,       C1_bit, Electricity, EM24,        EM24)         \
     X(fhkvdataiii,   T1_bit, HeatCostAllocation,        FHKVDATAIII,    FHKVDataIII)     \
+    X(generic,    T1_bit|C1_bit|S1_bit, Generic, GENERIC, Generic) \
     X(hydrus,     T1_bit, Water,       HYDRUS,      Hydrus)       \
     X(hydrodigit, T1_bit, Water,       HYDRODIGIT,  Hydrodigit)   \
     X(iperl,      T1_bit, Water,       IPERL,       Iperl)        \
@@ -402,7 +403,6 @@ shared_ptr<ElectricityMeter> createEBZWMBE(MeterInfo &m);
 shared_ptr<WaterMeter> createTopasEsKr(MeterInfo &m);
 shared_ptr<WaterMeter> createUltrimis(MeterInfo &m);
 shared_ptr<HeatMeter> createSensostar(MeterInfo &m);
-
-GenericMeter *createGeneric(WMBus *bus, MeterInfo &m);
+shared_ptr<GenericMeter> createGeneric(MeterInfo &mi);
 
 #endif

@@ -125,6 +125,7 @@ METER_OBJS:=\
 	$(BUILD)/meter_eurisii.o \
 	$(BUILD)/meter_fhkvdataiii.o \
 	$(BUILD)/meter_flowiq2200.o \
+	$(BUILD)/meter_generic.o \
 	$(BUILD)/meter_hydrus.o \
 	$(BUILD)/meter_hydrodigit.o \
 	$(BUILD)/meter_iperl.o \

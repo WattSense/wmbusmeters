@@ -34,6 +34,7 @@
     X(Text,TXT)              \
     X(Counter,INT)           \
     X(Time,Hour)             \
+    X(Other,Unknown)
 
 #define LIST_OF_UNITS \
     X(KWH,kwh,"kWh",Energy,"kilo Watt hour")  \
