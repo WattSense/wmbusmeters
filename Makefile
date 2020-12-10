@@ -22,6 +22,7 @@
 
 DESTDIR?=/
 RTLSDR?=true
+WITH_ADMIN?=true
 
 ifeq "$(HOST)" "arm"
     CXX?=arm-linux-gnueabihf-g++
@@ -176,7 +177,11 @@ ifeq "$(RTLSDR)" "true"
 	CXXFLAGS += -DRTLSDR
 endif
 
-all: $(BUILD)/wmbusmeters $(BUILD)/wmbusmeters-admin $(BUILD)/testinternals
+BINARIES = $(BUILD)/wmbusmeters $(BUILD)/testinternals
+ifeq "$(WITH_ADMIN)" "true"
+	BINARIES += $(BUILD)/wmbusmeters-admin
+endif
+all: $(BINARIES)
 	@$(STRIP_BINARY)
 	@cp $(BUILD)/wmbusmeters $(BUILD)/wmbusmetersd
 
