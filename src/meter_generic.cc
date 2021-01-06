@@ -107,6 +107,7 @@ const Data& MeterGeneric::getData(const string& k) {
 }
 
 void MeterGeneric::processContent(Telegram* t) {
+  prints_.clear();
   clearData();
   map<string, pair<int, DVEntry>> &dvEntries = t->values;
   for (auto dvEntry: dvEntries) {
@@ -116,17 +117,15 @@ void MeterGeneric::processContent(Telegram* t) {
     std::string str;
 
     if (extractDVdouble(&dvEntries, key, &offset, &number, false)) {
-      addData(key, number);
       // capture local key variable by value since lambda is called
       // after this function ended, which means after local variable's
       // lifetime ended
-      addPrint(key, Quantity::Other, [this, key](Unit u) { return this->getData(key).value_.num; }, key, true, true);
+      addPrint(key, Quantity::Other, [number](Unit u) { return number; }, key, true, true);
     } else if (extractDVstring(&dvEntries, key, &offset, &str)) {
-      addData(key, str);
       // capture local key variable by value since lambda is called
       // after this function ended, which means after local variable's
       // lifetime ended
-      addPrint(key, Quantity::Other, [this, key]() { return this->getData(key).value_.str; }, key, true, true);
+      addPrint(key, Quantity::Other, [str]() { return str; }, key, true, true);
     } else {
       verbose("(meter_generic) ignoring drh %s\n", key.c_str());
       continue;
