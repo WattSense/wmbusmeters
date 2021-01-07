@@ -116,7 +116,7 @@ void MeterGeneric::processContent(Telegram* t) {
     double number;
     std::string str;
 
-    if (extractDVdouble(&dvEntries, key, &offset, &number, false)) {
+    if (extractDVdouble(&dvEntries, key, &offset, &number, true)) {
       // capture local key variable by value since lambda is called
       // after this function ended, which means after local variable's
       // lifetime ended
