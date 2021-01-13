@@ -570,6 +570,18 @@ bool isValidId(string id, bool accept_non_compliant)
     return true;
 }
 
+bool isValidManufacturerId(const std::string& s) {
+    return s.length() == 4 && isValidId(s, true);
+}
+
+bool isValidDeviceType(const std::string& s) {
+    return s.length() == 2 && isValidId(s, true);
+}
+
+bool isValidVersion(const std::string& s) {
+    return s.length() == 2 && isValidId(s, true);
+}
+
 bool doesIdMatchExpression(string id, string match)
 {
     if (id.length() == 0) return false;

@@ -72,6 +72,8 @@ struct MeterGeneric : public virtual GenericMeter,
                       public virtual MeterCommonImplementation {
   MeterGeneric(MeterInfo &mi);
 
+  virtual bool isTelegramForMe(Telegram *t);
+
 private:
   void processContent(Telegram *t);
   void clearData();
@@ -80,6 +82,12 @@ private:
   const Data& getData(const string& k);
 
   map<string, Data> drhData;
+  bool has_mfct; // manufacturer
+  int mfct_id;
+  bool has_version;
+  uchar version;
+  bool has_devtype;
+  uchar devtype;
 };
 
 shared_ptr<GenericMeter> createGeneric(MeterInfo &mi)
@@ -88,6 +96,24 @@ shared_ptr<GenericMeter> createGeneric(MeterInfo &mi)
 }
 
 MeterGeneric::MeterGeneric(MeterInfo &mi) : MeterCommonImplementation(mi, MeterType::GENERIC) {
+  vector<uchar> tmp;
+  has_mfct = !mi.manufacturer_id.empty();
+  has_version = !mi.version.empty();
+  has_devtype = !mi.device_type.empty();
+  if (has_mfct) {
+    hex2bin(mi.manufacturer_id, &tmp);
+    mfct_id = (tmp[0] << 8) + tmp[1];
+    tmp.clear();
+  }
+  if (has_version) {
+    hex2bin(mi.version, &tmp);
+    version = tmp[0];
+    tmp.clear();
+  }
+  if (has_devtype) {
+    hex2bin(mi.device_type, &tmp);
+    devtype = tmp[0];
+  }
 }
 
 void MeterGeneric::clearData() {
@@ -131,4 +157,18 @@ void MeterGeneric::processContent(Telegram* t) {
       continue;
     }
   }
+}
+
+
+bool MeterGeneric::isTelegramForMe(Telegram *t) {
+  if (has_mfct && mfct_id != t->dll_mfct) {
+    return false;
+  }
+  if (has_devtype && devtype != t->dll_type) {
+    return false;
+  }
+  if (has_version && version != t->dll_version) {
+    return false;
+  }
+  return doesIdMatchExpressions(t->id, ids_);
 }

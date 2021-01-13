@@ -41,7 +41,7 @@ struct MeterCommonImplementation : public virtual Meter
     void onUpdate(function<void(Telegram*,Meter*)> cb);
     int numUpdates();
 
-    bool isTelegramForMe(Telegram *t);
+    virtual bool isTelegramForMe(Telegram *t);
     MeterKeys *meterKeys();
 
     std::vector<std::string> getRecords();
@@ -92,7 +92,6 @@ private:
     ELLSecurityMode expected_ell_sec_mode_ {};
     TPLSecurityMode expected_tpl_sec_mode_ {};
     string name_;
-    vector<string> ids_;
     vector<function<void(Telegram*,Meter*)>> on_update_;
     int num_updates_ {};
     time_t datetime_of_update_ {};
@@ -101,6 +100,7 @@ private:
     vector<string> jsons_;
 
 protected:
+    vector<string> ids_;
     std::map<std::string,std::pair<int,std::string>> values_;
     vector<Unit> conversions_;
     vector<Print> prints_;

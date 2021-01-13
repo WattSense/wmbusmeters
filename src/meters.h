@@ -177,6 +177,9 @@ struct MeterInfo
     string name;
     string type;
     string id;
+    string manufacturer_id;
+    string version;
+    string device_type;
     string key;
     LinkModeSet link_modes;
     vector<string> shells;
@@ -191,6 +194,20 @@ struct MeterInfo
         name = n;
         type = t;
         id = i;
+        key = k;
+        shells = s;
+        jsons = j;
+        link_modes = lms;
+    }
+
+    MeterInfo(string n, string t, string i, string m, string v, string d, string k, LinkModeSet lms, vector<string> &s, vector<string> &j)
+    {
+        name = n;
+        type = t;
+        id = i;
+        manufacturer_id = m;
+        version = v;
+        device_type = d;
         key = k;
         shells = s;
         jsons = j;

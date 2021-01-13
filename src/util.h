@@ -106,6 +106,9 @@ bool isValidMatchExpressions(std::string ids, bool non_compliant);
 bool doesIdMatchExpression(std::string id, std::string match);
 bool doesIdMatchExpressions(std::string& id, std::vector<std::string>& ids);
 bool isValidId(std::string id, bool accept_non_compliant);
+bool isValidManufacturerId(const std::string& s);
+bool isValidDeviceType(const std::string& s);
+bool isValidVersion(const std::string& s);
 
 bool isValidKey(std::string& key, MeterType mt);
 bool isFrequency(std::string& fq);

@@ -51,6 +51,9 @@ void parseMeterConfig(Configuration *c, vector<char> &buf, string file)
     auto i = buf.begin();
     string name;
     string type;
+    string manufacturer_id;
+    string version_num;
+    string device_type;
     string id;
     string key;
     string linkmodes;
@@ -81,6 +84,12 @@ void parseMeterConfig(Configuration *c, vector<char> &buf, string file)
         if (p.first == "type") type = p.second;
         else
         if (p.first == "id") id = p.second;
+        else
+        if (p.first == "manufacturer_id") manufacturer_id = p.second;
+        else
+        if (p.first == "version") version_num = p.second;
+        else
+        if (p.first == "device_type") device_type = p.second;
         else
         if (p.first == "key")
         {
@@ -154,8 +163,21 @@ void parseMeterConfig(Configuration *c, vector<char> &buf, string file)
         warning("Not a valid meter key \"%s\"\n", key.c_str());
         use = false;
     }
+    if (manufacturer_id.length() > 0 && !isValidManufacturerId(manufacturer_id)) {
+        warning("Not a valid manufacturer ID \"%s\"\n", manufacturer_id.c_str());
+        use = false;
+    }
+    if (version_num.length() > 0 && !isValidVersion(version_num)) {
+        warning("Not a valid version number \"%s\"\n", version_num.c_str());
+        use = false;
+    }
+    if (device_type.length() > 0 && !isValidDeviceType(device_type)) {
+        warning("Not a valid device type \"%s\"\n", device_type.c_str());
+        use = false;
+    }
     if (use) {
-        c->meters.push_back(MeterInfo(name, type, id, key, modes, telegram_shells, jsons));
+        c->meters.push_back(MeterInfo(name, type, id, manufacturer_id, version_num, device_type,
+                                      key, modes, telegram_shells, jsons));
     }
 
     return;
