@@ -531,7 +531,11 @@ bool extractDVdouble(map<string,pair<int,DVEntry>> *values,
                 + ((uint64_t)v[0]);
         }
         double scale = 1.0;
-        if (auto_scale) scale = vifScale(vif);
+        if (auto_scale)
+        {
+            scale = vifScale(vif);
+            if (scale < 0.0) scale = 1.0;
+        }
         *value = ((double)raw) / scale;
     }
     else
